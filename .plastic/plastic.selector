@@ -1,0 +1,4 @@
+repository "Individual@lydiakamynina@cloud"
+  path "/"
+    br "/main"
+    co "/main"
