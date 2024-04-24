@@ -1,30 +1,47 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-     public float moveSpeed = 5f;
-    // Start is called before the first frame update
+    private Rigidbody rb;
+    private GroundCheck groundCheck;
+    public float moveSpeed = 5f;
+    public float maxVelocityY = 10f;
+
     void Start()
     {
-        
+        rb = GetComponent<Rigidbody>();
+        groundCheck = GetComponent<GroundCheck>();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("space")){
-            GetComponent<Rigidbody>().velocity = new Vector3 (0,5,0);
-        }
-
-         if (Input.GetKey(KeyCode.W))
-        {
-            GetComponent<Rigidbody>().velocity = transform.forward * moveSpeed;
-        }
-        else if (Input.GetKey(KeyCode.S))
-        {
-            GetComponent<Rigidbody>().velocity = -transform.forward * moveSpeed;
-        }   
+        HandleMovement();
+        HandleJump();
     }
+
+    void HandleMovement()
+    {
+        float verticalInput = Input.GetAxis("Vertical");
+        Vector3 movement = transform.forward * verticalInput * moveSpeed;
+
+        movement.y = rb.velocity.y;
+
+        rb.velocity = movement;
+        rb.velocity = new Vector3(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -maxVelocityY, maxVelocityY), rb.velocity.z);
+    }
+
+        void HandleJump()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (groundCheck.IsGrounded)
+            {
+                rb.velocity = new Vector3 (0, 5, 0);
+            }
+            else
+            {
+                Debug.Log("Not grounded - Cannot jump");
+            }
+    }
+}
 }
