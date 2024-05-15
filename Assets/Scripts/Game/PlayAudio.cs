@@ -6,17 +6,30 @@ public class PlayAudio : MonoBehaviour
     public float maxVolumeDistance = 10f;
 
     private AudioSource audioSource;
-    private Transform lizzard;
+    private Transform lizard;
 
-    void Start()
+ void Start()
+{
+    // Find the AudioSource component attached to the same GameObject
+    audioSource = GetComponent<AudioSource>();
+
+    // Find the lizard object in the scene
+    GameObject lizardObject = GameObject.FindWithTag("Player");
+    if (lizardObject != null)
     {
-        audioSource = GetComponent<AudioSource>();
-        lizzard = GameObject.FindWithTag("lizzard").transform; // Adjust tag or reference based on your setup
+        // Assign the transform of the lizard object
+        lizard = lizardObject.transform;
     }
+    else
+    {
+        Debug.LogError("Lizard object not found!");
+    }
+}
+
 
     void Update()
     {
-        float distance = Vector3.Distance(transform.position, lizzard.position);
+        float distance = Vector3.Distance(transform.position, lizard.position);
 
         if (distance <= maxVolumeDistance)
         {
